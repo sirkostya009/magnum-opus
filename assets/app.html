@@ -1,0 +1,215 @@
+<head>
+    <meta charset="UTF-8">
+    <title>Магнум опус</title>
+    <link rel="stylesheet" href="stylesheet.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body class="bg-[#2e303e] text-white flex flex-col">
+
+<section class="bg-[#8e66e2] w-full h-6 flex flex-row items-center">
+    <button id="fileButton" class="hover:text-gray-200 px-1.5" onclick="fileDropdown.classList.toggle('hidden')">Файл</button>
+
+    <div id="fileDropdown" class="absolute top-6 bg-[#8e66e2] z-10 h-auto w-[150px] hidden">
+        <button class="hover:text-gray-200 px-1.5 w-full text-left" onclick="dialog.classList.remove('hidden') || diskLabel.focus()">Підконектити диск</button>
+        <button class="hover:text-gray-200 px-1.5 w-full text-left" onclick="nuke()">Закрити</button>
+    </div>
+
+    <button class="hover:text-gray-200 px-1.5" onclick="openInfo()">Про</button>
+</section>
+
+<section class="w-full bg-[#7e56c2] p-1">
+    <button onclick="dialog.classList.remove('hidden') || diskLabel.focus()">
+        <svg class="text-white hover:text-gray-300 transition-color duration-300" xmlns="http://www.w3.org/2000/svg"
+             width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" x2="2" y1="12" y2="12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>
+            <line x1="6" x2="6.01" y1="16" y2="16"/>
+            <line x1="10" x2="10.01" y1="16" y2="16"/>
+        </svg>
+    </button>
+</section>
+
+<main id="disks" class="flex-1 w-full p-6 flex flex-col items-center space-y-4">
+
+</main>
+
+<section class="bg-[#7e56c2] px-1 text-sm antialised">
+    <span id="diskCount">Ready or whatever</span>
+</section>
+
+<dialog id="dialog" class="absolute w-screen h-screen flex items-center hidden bg-[#2e303e] bg-opacity-70 backdrop-blur-sm text-white">
+    <form class="grid grid-col-1 items-center min-w-[400px] w-[25%] bg-[#252631] p-5 m-auto gap-y-2 text-lg rounded-md">
+        <label>
+            Volume label:
+            <select class="appearance-none py-1 px-2 w-[28%] block bg-[#252631] border border-white/50 rounded-[4px]" id="diskLabel">
+                <option>Z:</option>
+                <option>Y:</option>
+                <option>X:</option>
+                <option>W:</option>
+                <option>V:</option>
+                <option>U:</option>
+                <option>T:</option>
+                <option>S:</option>
+                <option>R:</option>
+                <option>Q:</option>
+                <option>P:</option>
+                <option>O:</option>
+                <option>N:</option>
+                <option>M:</option>
+                <option>L:</option>
+                <option>K:</option>
+                <option>J:</option>
+                <option>I:</option>
+                <option>H:</option>
+                <option>G:</option>
+                <option>F:</option>
+                <option>D:</option>
+                <option>C:</option>
+                <option>B:</option>
+                <option>A:</option>
+            </select>
+        </label>
+
+        <label class="block mb-2">  
+            Link:
+            <input class="block w-full h-8 p-2 bg-[#2e303e] border border-white/50 rounded-[4px] shadow-md transition-all duration-300 hover:bg-[#353849] hover:border-[#aa8fd7] focus:outline-none focus:bg-white focus:text-black" id="diskUrl" type="text" placeholder="\\localhost\folder"/>
+        </label>
+
+        <label>
+            Username:
+            <input class="block w-full h-8 p-2 bg-[#2e303e] border border-white/50 rounded-[4px] shadow-md transition-all duration-300 hover:bg-[#353849] hover:border-[#aa8fd7] focus:outline-none focus:bg-white focus:text-black" id="username" type="text">
+        </label>
+
+        <label>
+            Password:
+            <input class="block w-full h-8 p-2 bg-[#2e303e] border border-white/50 rounded-[4px] shadow-md transition-all duration-300 hover:bg-[#353849] hover:border-[#aa8fd7] focus:outline-none focus:bg-white focus:text-black" id="password" type="password">
+        </label>
+
+        <div class="flex flex-row justify-around">
+
+            <div class="inline-flex items-center">
+                <div>
+                    <p class="block font-sans font-medium antialiased leading-relaxed text-white">
+                    Remember 
+                    </p>
+                </div>
+                <label class="relative flex items-center p-3 rounded-full cursor-pointer">
+                <input id="rememberDisk" type="checkbox" class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-white/50 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-[#aa8fd7] checked:bg-[#aa8fd7] checked:before:bg-white/30 hover:before:opacity-10"/>
+                <span class="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" stroke="currentColor" stroke-width="1">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                    </svg>
+                </span>
+                </label>
+            </div>
+
+            <div class="inline-flex items-center">
+                <div>
+                    <p class="block font-sans font-medium antialiased leading-relaxed text-white">
+                        Connect on startup
+                    </p>
+                </div>
+                <label class="relative flex items-center p-3 rounded-full cursor-pointer">
+                <input id="startupDisk" type="checkbox" class="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-white/50 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-[#aa8fd7] checked:bg-[#aa8fd7] checked:before:bg-white/30 hover:before:opacity-10"/>
+                <span class="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" stroke="currentColor" stroke-width="1">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                    </svg>
+                </span>
+                </label>
+            </div>
+
+        </div>
+
+        <button class="rounded-[4px] border border-white/30 transition-all duration-300 hover:bg-[#353849] hover:border-[#aa8fd7]" type="button" onclick="tryConnect()">Add new disk</button>
+
+        <span id="message" class="text-red-800"></span>
+    </form>
+</dialog>
+
+</body>
+
+<script>
+    addEventListener('click', e => e.target.id !== 'fileButton' && fileDropdown.classList.add('hidden'));
+
+    addEventListener('keydown', e => {
+        switch (e.ctrlKey ? e.key : '\0') {
+        case 'n':
+            connectDisk();
+            return;
+        case 'q':
+            nuke();
+            return;
+        }
+    });
+
+    function tryDisconnectDisk(disk, caller) {
+        const success = disconnectDisk(disk);
+        if (!success) {
+            caller.parentElement.remove();
+            diskCount.innerText = `Кількість дисків: ${disks.children.length}`;
+        }
+    }
+
+    function addDisk(url, label) {
+        const div = document.createElement('div');
+        div.className = 'flex items-center w-[400px] border border-white/30 p-5 antialiased rounded-sm';
+        div.innerHTML = `
+            <span class="font-semibold">${label}</span>
+            <span class="mr-auto">${url}</span>
+
+            <button class="mr-4 text-gray-300 hover:text-white transition-color duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-folder-search">
+                    <circle cx="17" cy="17" r="3" />
+                    <path d="M10.7 20H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H20a2 2 0 0 1 2 2v4.1" />
+                    <path d="m21 21-1.5-1.5" />
+                </svg>
+            </button>
+
+            <button class="transition-colors duration-200 hover:text-red-500">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-unplug">
+                    <path d="m19 5 3-3" />
+                    <path d="m2 22 3-3" />
+                    <path d="M6.3 20.3a2.4 2.4 0 0 0 3.4 0L12 18l-6-6-2.3 2.3a2.4 2.4 0 0 0 0 3.4Z" />
+                    <path d="M7.5 13.5 10 11" />
+                    <path d="M10.5 16.5 13 14" />
+                    <path d="m12 6 6 6 2.3-2.3a2.4 2.4 0 0 0 0-3.4l-2.6-2.6a2.4 2.4 0 0 0-3.4 0Z" />
+                </svg>
+            </button>
+        `;
+        div.children[3].onclick = () => tryDisconnectDisk(label, div.children[2]);
+        div.children[2].onclick = () => openDisk(label);
+        disks.appendChild(div);
+    }
+
+    let timeout;
+
+    function tryConnect() {
+        const dword = connectDisk(
+            diskLabel.value,
+            diskUrl.value,
+            username.value,
+            password.value,
+            (rememberDisk.checked ? 0x1 : 0) | (startupDisk.checked ? 0x2 : 0)
+        );
+
+        if (!dword) {
+            clearTimeout(timeout);
+
+            diskCount.innerText = message.innerText = `Failed to connect, connectDisk returned ${dword}`;
+
+            timeout = setTimeout(() => {
+                diskCount.innerText = `Кількість дисків: ${disks.children.length}`;
+                message.innerText = '';
+            }, 3000);
+        } else {
+            dialog.classList.add('hidden');
+            addDisk(diskUrl.value, diskLabel.value);
+            diskCount.innerText = `Кількість дисків: ${disks.children.length}`;
+        }
+    }
+
+    dialog.addEventListener('keydown', ({keyCode}) => {
+        if (keyCode === 27) dialog.classList.add('hidden');
+    });
+</script>
