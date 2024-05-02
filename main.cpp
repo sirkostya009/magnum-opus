@@ -174,11 +174,9 @@ public:
     }
 
     ul::JSValue DisconnectDisk(const ul::JSObject&, const ul::JSArgs& args) {
-        auto url = (ul::String) args[0];
+        auto label = ((ul::String) args[0]).utf8();
 
-        std::cout << url.utf8().data() << std::endl;
-
-        return {(bool) WNetCancelConnection2(url.utf8().data(), CONNECT_UPDATE_PROFILE, false)};
+        return {(uint64_t) WNetCancelConnection2(label.data(), CONNECT_UPDATE_PROFILE, true)};
     }
 
     std::map<std::string, std::string> ListValidDrives() {
@@ -188,13 +186,21 @@ public:
         for (int i = 0; i < 26; i++) {
             if (!(drives >> i & 1)) continue;
 
-            auto label = std::string(1, 'A' + i) + ":\\";
-            if (!(GetDriveType(label.c_str()) & DRIVE_REMOTE)) continue;
+            auto label = std::wstring(1, 'A' + i) + L":\\";
+            if (!(GetDriveTypeW(label.c_str()) & DRIVE_REMOTE))
+                continue;
 
-            auto buf = std::string(MAX_PATH, 0);
-            if (!GetVolumeInformation(label.c_str(), buf.data(), MAX_PATH, nullptr, nullptr, nullptr, nullptr, 0)) continue;
+            auto buf = new wchar_t[MAX_PATH]{};
+            auto size = (DWORD) MAX_PATH;
+            if (WNetGetUniversalNameW(label.c_str(), UNIVERSAL_NAME_INFO_LEVEL, buf, &size) != NO_ERROR)
+                continue;
 
-            map.emplace(std::move(label), std::move(buf));
+            auto name = std::wstring(((UNIVERSAL_NAME_INFOW*)buf)->lpUniversalName);
+            delete[] buf;
+
+#define as_utf8(str) std::move(std::string(ul::String16(str.data(), str.size()).utf8().data()))
+
+            map.emplace(as_utf8(label.substr(0, 2)), as_utf8(name));
         }
 
         return map;
